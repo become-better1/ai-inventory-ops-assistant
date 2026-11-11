@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+backups/
+backups-from-cloud/
+tools/
+.tunnel/
+*.sqlite3*
+*.db
+*.zip
+*.env
+.env*
+deploy/tunnel.yaml
+deploy/health.url
+*.log

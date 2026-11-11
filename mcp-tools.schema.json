@@ -1,0 +1,1824 @@
+{
+  "design_version": "1.0",
+  "sdk": "mcp==2.3.0",
+  "transport": "stdio",
+  "tools": [
+    {
+      "name": "inventory",
+      "description": "查询已记录的当前库存，可按房间或未归类查询。空结果不表示用户没有该物品。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "inventoryRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "room_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Room Id"
+              },
+              "unclassified": {
+                "default": false,
+                "title": "Unclassified",
+                "type": "boolean"
+              }
+            },
+            "title": "inventoryRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/inventoryRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "inventoryArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "inventoryDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "spending",
+      "description": "按币种汇总已记录消费。complete=false 或 net_minor=null 时必须说明金额信息不完整。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "spendingRequest": {
+            "additionalProperties": false,
+            "properties": {},
+            "title": "spendingRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/spendingRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "spendingArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "spendingDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "rooms",
+      "description": "查看活动房间和当前版本。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "roomsRequest": {
+            "additionalProperties": false,
+            "properties": {},
+            "title": "roomsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/roomsRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "roomsArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "roomsDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "rules",
+      "description": "查看用户保存的消费准则；active_only=true 用于购买建议。准则只供参考，不强制购买。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "rulesRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "active_only": {
+                "default": false,
+                "title": "Active Only",
+                "type": "boolean"
+              }
+            },
+            "title": "rulesRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/rulesRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "rulesArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "rulesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "return_events",
+      "description": "查询有效退货记录和版本，用于更正金额；不查询或追问到账。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "return_eventsRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "purchase_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Purchase Id"
+              }
+            },
+            "title": "return_eventsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/return_eventsRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "return_eventsArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "return_eventsDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "purchase_records",
+      "description": "查询已记录购买历史、购买ID、金额和当前版本，供补充或更正原购买金额。不要把当前库存数量当作购买数量。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "purchase_recordsRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "purchase_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Purchase Id"
+              }
+            },
+            "title": "purchase_recordsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/purchase_recordsRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "purchase_recordsArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "purchase_recordsDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "correct_purchase_amount",
+      "description": "补充或更正原购买总金额，先查询购买ID和当前版本。金额以最小货币单位计，例如23元人民币为2300；不重新录入、不增加库存、不修改购买数量。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "correct_purchase_amountRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "purchase_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Purchase Id"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "total_amount_minor": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Total Amount Minor"
+              },
+              "currency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Currency"
+              }
+            },
+            "required": [
+              "request_key",
+              "purchase_id",
+              "expected_version",
+              "total_amount_minor"
+            ],
+            "title": "correct_purchase_amountRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/correct_purchase_amountRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "correct_purchase_amountArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "correct_purchase_amountDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "record_purchase",
+      "description": "仅记录用户明确已购买/下单/付款事实，想买或准备买不得调用。订单截图明确时可直接记录；保留订单身份用于去重。history_only=true 不增加库存。金额使用最小货币单位，可省略。用户未主动提供金额时保留未知，直接回复“已记录：物品×数量”，不追问价格、不提示待补充、不主动邀请补录；只有当前预算或成本判断确实需要金额时才询问。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "record_purchaseRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "quantity": {
+                "exclusiveMinimum": 0,
+                "title": "Quantity",
+                "type": "integer"
+              },
+              "total_amount_minor": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Amount Minor"
+              },
+              "currency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Currency"
+              },
+              "unit": {
+                "default": "件",
+                "minLength": 1,
+                "title": "Unit",
+                "type": "string"
+              },
+              "history_only": {
+                "default": false,
+                "title": "History Only",
+                "type": "boolean"
+              },
+              "received": {
+                "default": false,
+                "title": "Received",
+                "type": "boolean"
+              },
+              "purchase_date": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Purchase Date"
+              },
+              "date_precision": {
+                "default": "unknown",
+                "enum": [
+                  "unknown",
+                  "year",
+                  "month",
+                  "day"
+                ],
+                "title": "Date Precision",
+                "type": "string"
+              },
+              "merchant": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Merchant"
+              },
+              "external_order_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "External Order Id"
+              },
+              "external_line_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "External Line Id"
+              },
+              "source_kind": {
+                "default": "natural_language",
+                "enum": [
+                  "natural_language",
+                  "photo",
+                  "order_image",
+                  "correction"
+                ],
+                "title": "Source Kind",
+                "type": "string"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "name",
+              "quantity"
+            ],
+            "title": "record_purchaseRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/record_purchaseRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "record_purchaseArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "record_purchaseDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "record_owned",
+      "description": "记录明确拥有的已有物品，不产生购买历史。总数修正不得当作新增。confirmed_distinct 仅在用户已明确是额外物品时使用。普通照片先展示清单并一次确认。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "record_ownedRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "quantity": {
+                "default": 1,
+                "exclusiveMinimum": 0,
+                "title": "Quantity",
+                "type": "integer"
+              },
+              "unit": {
+                "default": "件",
+                "minLength": 1,
+                "title": "Unit",
+                "type": "string"
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Category"
+              },
+              "brand": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Brand"
+              },
+              "model": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Model"
+              },
+              "usage_status": {
+                "default": "unknown",
+                "enum": [
+                  "unknown",
+                  "in_use",
+                  "not_in_use"
+                ],
+                "title": "Usage Status",
+                "type": "string"
+              },
+              "condition_status": {
+                "default": "unknown",
+                "enum": [
+                  "unknown",
+                  "normal",
+                  "damaged"
+                ],
+                "title": "Condition Status",
+                "type": "string"
+              },
+              "location_detail": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Location Detail"
+              },
+              "feedback": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Feedback"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "name"
+            ],
+            "title": "record_ownedRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/record_ownedRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "record_ownedArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "record_ownedDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "update_item",
+      "description": "修改明确的单组物品属性，changes 仅允许 usage_status、condition_status、feedback、location_detail。先查询版本，明确单组修改无需重复确认。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "JsonValue": {},
+          "update_itemRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "item_id": {
+                "minLength": 1,
+                "title": "Item Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "title": "Changes",
+                "type": "object"
+              }
+            },
+            "required": [
+              "request_key",
+              "item_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "update_itemRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/update_itemRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "update_itemArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "update_itemDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "return_item",
+      "description": "仅记录已经退货：同步退出库存并抵扣消费金额，不询问到账。准备/申请退货不得调用。infer_amount=true 仅用于同价金额可明确分摊，其他情况提供金额或留空。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "return_itemRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "item_id": {
+                "minLength": 1,
+                "title": "Item Id",
+                "type": "string"
+              },
+              "quantity": {
+                "exclusiveMinimum": 0,
+                "title": "Quantity",
+                "type": "integer"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "amount_minor": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Amount Minor"
+              },
+              "infer_amount": {
+                "default": false,
+                "title": "Infer Amount",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "item_id",
+              "quantity",
+              "expected_version"
+            ],
+            "title": "return_itemRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/return_itemRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "return_itemArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "return_itemDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "correct_return_amount",
+      "description": "更正原退货事件金额，不新增抵扣、不改变库存。先查询退货事件版本。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "correct_return_amountRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "event_id": {
+                "minLength": 1,
+                "title": "Event Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "amount_minor": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Amount Minor"
+              },
+              "currency": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Currency"
+              }
+            },
+            "required": [
+              "request_key",
+              "event_id",
+              "expected_version",
+              "amount_minor"
+            ],
+            "title": "correct_return_amountRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/correct_return_amountRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "correct_return_amountArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "correct_return_amountDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "undo",
+      "description": "撤销用户明确指定的成功业务操作。必须使用对应 operation_id，不猜测跨聊天的最近操作；不撤销已撤销操作。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "undoRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "operation_id": {
+                "minLength": 1,
+                "title": "Operation Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "request_key",
+              "operation_id"
+            ],
+            "title": "undoRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/undoRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "undoArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "undoDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "create_room",
+      "description": "用户要求时新增房间。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "create_roomRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "room_type": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Room Type"
+              }
+            },
+            "required": [
+              "request_key",
+              "name"
+            ],
+            "title": "create_roomRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/create_roomRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "create_roomArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "create_roomDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "rename_room",
+      "description": "重命名指定房间，需当前版本。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "rename_roomRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "room_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Room Id"
+              },
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "request_key",
+              "room_id",
+              "name",
+              "expected_version"
+            ],
+            "title": "rename_roomRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/rename_roomRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "rename_roomArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "rename_roomDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "move_item",
+      "description": "明确移动一个库存分组，整个分组一起移动。room_id=null 表示未归类；不把数量大于一的分组误当成单件。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "move_itemRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "item_id": {
+                "minLength": 1,
+                "title": "Item Id",
+                "type": "string"
+              },
+              "room_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Room Id"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "location_detail": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Location Detail"
+              }
+            },
+            "required": [
+              "request_key",
+              "item_id",
+              "room_id",
+              "expected_version"
+            ],
+            "title": "move_itemRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/move_itemRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "move_itemArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "move_itemDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "preview_move",
+      "description": "只读预览批量移动，向用户展示房间、物品、数量、单位和范围，等待确认后使用预览编号执行。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "preview_moveRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "item_ids": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Item Ids",
+                "type": "array"
+              },
+              "room_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Room Id"
+              },
+              "location_detail": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Location Detail"
+              }
+            },
+            "required": [
+              "item_ids",
+              "room_id"
+            ],
+            "title": "preview_moveRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/preview_moveRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "preview_moveArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "preview_moveDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "preview_delete_room",
+      "description": "只读预览删除房间的影响范围，需用户确认后执行；删除不删除物品和购买历史。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "preview_delete_roomRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "room_id": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Room Id"
+              }
+            },
+            "required": [
+              "room_id"
+            ],
+            "title": "preview_delete_roomRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/preview_delete_roomRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "preview_delete_roomArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "preview_delete_roomDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "preview_quantity_correction",
+      "description": "只读预览最终库存总数修正，target_total 是最终总数。范围仅为规范化精确名称和单位，不能冒充跨型号类别统计。needs_allocation=true 时先明确减少哪组再重新预览。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "preview_quantity_correctionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "unit": {
+                "default": "件",
+                "minLength": 1,
+                "title": "Unit",
+                "type": "string"
+              },
+              "target_total": {
+                "minimum": 0,
+                "title": "Target Total",
+                "type": "integer"
+              },
+              "removals": {
+                "anyOf": [
+                  {
+                    "additionalProperties": {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Removals"
+              }
+            },
+            "required": [
+              "name",
+              "target_total"
+            ],
+            "title": "preview_quantity_correctionRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/preview_quantity_correctionRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "preview_quantity_correctionArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "preview_quantity_correctionDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "move_items",
+      "description": "用户确认原预览范围后，用 preview_id 执行批量移动，confirmed=true；不可伪造确认或替换计划。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "move_itemsRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "preview_id": {
+                "minLength": 1,
+                "title": "Preview Id",
+                "type": "string"
+              },
+              "confirmed": {
+                "default": false,
+                "title": "Confirmed",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "preview_id"
+            ],
+            "title": "move_itemsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/move_itemsRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "move_itemsArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "move_itemsDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_room",
+      "description": "用户确认原预览后删除房间，相关位置归未分类，可撤销；传 preview_id 和 confirmed=true。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "delete_roomRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "preview_id": {
+                "minLength": 1,
+                "title": "Preview Id",
+                "type": "string"
+              },
+              "confirmed": {
+                "default": false,
+                "title": "Confirmed",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "preview_id"
+            ],
+            "title": "delete_roomRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/delete_roomRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "delete_roomArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "delete_roomDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "correct_quantity",
+      "description": "按 preview_id 修正总数；仅 requires_confirmation=true 的多组减少必须先获用户确认。单组明确修正无需额外确认。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "correct_quantityRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "preview_id": {
+                "minLength": 1,
+                "title": "Preview Id",
+                "type": "string"
+              },
+              "confirmed": {
+                "default": false,
+                "title": "Confirmed",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "preview_id"
+            ],
+            "title": "correct_quantityRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/correct_quantityRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "correct_quantityArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "correct_quantityDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "create_rule",
+      "description": "仅用户明确要求创建长期消费准则时调用；不主动替用户制定。保留 content 原文，scope/interpretation 只是辅助解释。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "JsonValue": {},
+          "create_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "title": "Content",
+                "type": "string"
+              },
+              "scope": {
+                "anyOf": [
+                  {
+                    "additionalProperties": {
+                      "$ref": "#/$defs/JsonValue"
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Scope"
+              },
+              "interpretation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interpretation"
+              }
+            },
+            "required": [
+              "request_key",
+              "content"
+            ],
+            "title": "create_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/create_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "create_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "create_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "update_rule",
+      "description": "修改指定消费准则，changes 仅允许 content、scope、interpretation、is_active。临时购买例外不修改长期准则。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "JsonValue": {},
+          "update_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "rule_id": {
+                "minLength": 1,
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "title": "Changes",
+                "type": "object"
+              }
+            },
+            "required": [
+              "request_key",
+              "rule_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "update_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/update_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "update_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "update_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_rule",
+      "description": "用户明确要求时删除消费准则，可撤销。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "delete_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "title": "Request Key",
+                "type": "string"
+              },
+              "rule_id": {
+                "minLength": 1,
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "request_key",
+              "rule_id",
+              "expected_version"
+            ],
+            "title": "delete_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/delete_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "delete_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "delete_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}
