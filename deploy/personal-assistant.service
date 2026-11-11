@@ -1,0 +1,24 @@
+[Unit]
+Description=Personal consumption and inventory MCP tunnel
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/home/admin/personal-assistant/data/personal.sqlite3
+
+[Service]
+Type=simple
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/personal-assistant
+EnvironmentFile=/etc/personal-assistant/tunnel.env
+ExecStart=/home/admin/personal-assistant/tools/tunnel-client/tunnel-client run --profile-file /home/admin/personal-assistant/deploy/tunnel.yaml --health.url-file /home/admin/personal-assistant/deploy/health.url
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/admin/personal-assistant
+
+[Install]
+WantedBy=multi-user.target

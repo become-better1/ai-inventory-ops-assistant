@@ -1,0 +1,14 @@
+[Unit]
+Description=Daily verified SQLite snapshot
+
+[Service]
+Type=oneshot
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/personal-assistant
+ExecStart=/home/admin/personal-assistant/.venv/bin/python /home/admin/personal-assistant/maintenance.py backup --db /home/admin/personal-assistant/data/personal.sqlite3 --directory /home/admin/personal-assistant/backups
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/admin/personal-assistant
