@@ -2,7 +2,6 @@
 
 ** AI 工程实践作品：把自然语言操作接入结构化工具，并完成数据一致性控制、测试、云端部署与备份恢复。**
 
-作者：Hao He
 
 这是个人消费与物品管理场景的单用户自托管项目。用户通过 ChatGPT 表达购买、退货、查询和整理意图，模型调用 MCP 工具，Python 服务校验参数并更新 SQLite。
 
@@ -95,7 +94,6 @@ python mcp_server.py --db data/demo.sqlite3
 - [可靠性设计与测试证据](docs/reliability.md)
 - [Linux 部署与维护](docs/deployment.md)
 - [演示视频脚本](docs/demo-script.md)
-- [简历与面试讲解](docs/career.md)
 - [公开发布检查与项目边界](docs/publication.md)
 
 ## 主要代码
