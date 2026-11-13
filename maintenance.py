@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 import sqlite3
 from uuid import uuid4
-from database import DEFAULT_DB,ROOT,now
+from database import DEFAULT_DB,ROOT,now,validate_schema
 from file_lock import file_lock,lock_path
 
 def read_only(path):
@@ -25,15 +25,7 @@ def inspect_database(path):
             raise ValueError('Database integrity check failed')
         if c.execute('PRAGMA foreign_key_check').fetchall():
             raise ValueError('Database has foreign key errors')
-        row=c.execute('SELECT version,checksum FROM schema_migrations ORDER BY version DESC LIMIT 1').fetchone()
-        checksum=hashlib.sha256((ROOT/'schema.sql').read_text(encoding='utf-8').encode()).hexdigest()
-        if not row or row!=(1,checksum):
-            raise ValueError('Unsupported database schema or checksum')
-        required={'items','purchase_records','item_events','consumption_rules','rooms','operations','operation_changes','schema_migrations'}
-        actual={r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        if not required<=actual:
-            raise ValueError('Incomplete database schema')
-        return dict(schema_version=row[0],schema_checksum=row[1])
+        return validate_schema(c)
 
 def digest(path):
     h=hashlib.sha256()

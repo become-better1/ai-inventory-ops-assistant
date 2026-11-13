@@ -6,12 +6,15 @@ from uuid import uuid4
 from database import connect, initialize, DEFAULT_DB, now
 from rooms import RoomOperations
 from rules import RuleOperations
+from behaviors import BehaviorOperations, validate_behaviors
+from behavior_matching import BehaviorMatching
+from behavior_plans import BehaviorPlanOperations
 from quantities import QuantityOperations
 from orders import validate_order_input, match_purchase, validate_unique_orders
-from service_types import positive, text, partial_date
+from service_types import positive, text, partial_date, DomainError
 from file_lock import file_lock, lock_path
 
-TABLES = {'items', 'purchase_records', 'item_events', 'rooms', 'consumption_rules'}
+TABLES = {'items', 'purchase_records', 'item_events', 'rooms', 'consumption_rules', 'routine_flows', 'routine_stages', 'behavior_rules'}
 
 def dump(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, allow_nan=False)
@@ -44,10 +47,13 @@ class _Writer:
         if token not in self.changes:
             self.changes[token] = before
 
+    def new_id(self):
+        return str(uuid4())
+
     def insert(self, table, values):
         if table not in TABLES:
             raise ValueError('Unsupported entity')
-        values = dict(values, id=str(uuid4()), created_at=now(), updated_at=now(),
+        values = dict(values, id=self.new_id(), created_at=now(), updated_at=now(),
                       version=1, is_void=0)
         self.c.execute(f"INSERT INTO {table} ({','.join(values)}) VALUES ({','.join('?' for _ in values)})", tuple(values.values()))
         self.change(table, values['id'], None)
@@ -68,6 +74,7 @@ class _Writer:
 
     def validate(self):
         validate_unique_orders(self.c)
+        validate_behaviors(self.c)
         rule_contents = set()
         for row in self.c.execute('SELECT content FROM consumption_rules WHERE is_void=0'):
             normalized = ''.join(row['content'].casefold().split())
@@ -114,7 +121,7 @@ class _Writer:
                 (self.op, seq, table, key, 'insert' if before is None else 'update',
                  None if before is None else dump(before), dump(after), after['version']))
 
-class Assistant(RoomOperations, RuleOperations, QuantityOperations):
+class Assistant(RoomOperations, RuleOperations, QuantityOperations, BehaviorOperations, BehaviorMatching, BehaviorPlanOperations):
     def __init__(self, path=DEFAULT_DB):
         self.path = initialize(path)
 
@@ -127,7 +134,7 @@ class Assistant(RoomOperations, RuleOperations, QuantityOperations):
                 old = c.execute('SELECT * FROM operations WHERE request_key=?',(request_key,)).fetchone()
                 if old:
                     if old['request_hash'] != digest:
-                        raise ValueError('Request key reused with different content')
+                        raise DomainError('KEY_CONFLICT','Request key reused with different content')
                     c.rollback()
                     return json.loads(old['response_json'])
                 op = str(uuid4())
@@ -414,6 +421,14 @@ class Assistant(RoomOperations, RuleOperations, QuantityOperations):
                 current = w.get(change['entity_type'],change['entity_id'])
                 if current['version']!=change['expected_version'] or dump(current)!=change['after_json']:
                     raise ValueError('Later edits prevent automatic undo')
+            # Vacate touched unique stage positions before restoring an entire order.
+            stage_changes = [ch for ch in changes if ch['entity_type']=='routine_stages']
+            maximum = w.c.execute('SELECT coalesce(max(position),0) FROM routine_stages').fetchone()[0]
+            for index, change in enumerate(stage_changes,1):
+                current = w.get('routine_stages',change['entity_id'])
+                w.change('routine_stages',current['id'],current)
+                w.c.execute('UPDATE routine_stages SET position=? WHERE id=?',
+                            (maximum+index,current['id']))
             for change in changes:
                 if change['before_json'] is None:
                     w.update(change['entity_type'],change['entity_id'],{'is_void':1})

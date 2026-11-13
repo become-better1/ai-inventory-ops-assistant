@@ -14,3 +14,7 @@ tools/
 deploy/tunnel.yaml
 deploy/health.url
 *.log
+
+.DS_Store
+*.pem
+*.key

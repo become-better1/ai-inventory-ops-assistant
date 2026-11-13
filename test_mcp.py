@@ -176,6 +176,15 @@ class ProcessChecks(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(result.structured_content['ok'])
                     inventory=await c.call_tool('inventory',{'request':{}})
                     self.assertEqual(len(inventory.structured_content['data']),1)
+                    created=await c.call_tool('create_behavior_rule',{'request':{
+                        'request_key':'behavior','rule':{'content':'疲惫时听音乐','kind':'action',
+                        'behavior':'听音乐','conditions':{'states':['很累']}}}})
+                    self.assertTrue(created.structured_content['ok'])
+                    matched=await c.call_tool('behavior_candidates',{'request':{
+                        'context':{'states':['很累']}}})
+                    self.assertEqual(matched.structured_content['data']['status'],'matched')
+                    self.assertEqual(matched.structured_content['data']['matched'][0]['rule_id'],
+                                     created.structured_content['data']['rule_id'])
                     from maintenance import snapshot,restore
                     backup=snapshot(Path(folder)/'stdio.sqlite3',Path(folder)/'backups')
                     with self.assertRaises(ValueError):

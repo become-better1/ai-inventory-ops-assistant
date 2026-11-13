@@ -21,3 +21,11 @@ def partial_date(value, precision):
         raise ValueError('Date does not match precision')
     parts = [int(p) for p in value.split('-')]
     date(*(parts+[1]*(3-len(parts))))
+
+
+class DomainError(ValueError):
+    """Stable structured refusal code, without exposing implementation details."""
+    def __init__(self, code, message, *, candidates=None):
+        super().__init__(message)
+        self.code = code
+        self.candidates = candidates

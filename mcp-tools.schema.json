@@ -1,5 +1,5 @@
 {
-  "design_version": "1.0",
+  "design_version": "2.0",
   "sdk": "mcp==2.3.0",
   "transport": "stdio",
   "tools": [
@@ -1812,6 +1812,2264 @@
           "$ref": "#/$defs/JsonValue"
         },
         "title": "delete_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "routine_flows",
+      "description": "查询日常流程和适用日。阶段优先于参考时间；有下一页须继续查询，不能按时间推断完成。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "routine_flowsRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "active_only": {
+                "default": false,
+                "title": "Active Only",
+                "type": "boolean"
+              },
+              "limit": {
+                "default": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              },
+              "cursor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Cursor"
+              }
+            },
+            "title": "routine_flowsRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/routine_flowsRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "routine_flowsArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "routine_flowsDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "routine_stages",
+      "description": "查询指定流程的有序阶段和版本；只读，不自动推进当前阶段或标记完成。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "routine_stagesRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "flow_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "include_inactive": {
+                "default": false,
+                "title": "Include Inactive",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "flow_id"
+            ],
+            "title": "routine_stagesRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/routine_stagesRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "routine_stagesArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "routine_stagesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "behavior_rules",
+      "description": "仅用于查看或维护准则及查ID/version。当前该做什么、想看手机等提醒必须使用behavior_candidates；未明确阶段先简短询问，不可据管理清单直接选睡前方案。query仅作关键词检索。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "behavior_rulesRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "rule_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Rule Id"
+              },
+              "flow_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Flow Id"
+              },
+              "stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stage Id"
+              },
+              "query": {
+                "anyOf": [
+                  {
+                    "minLength": 1,
+                    "pattern": "\\S",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Query"
+              },
+              "active_only": {
+                "default": false,
+                "title": "Active Only",
+                "type": "boolean"
+              },
+              "limit": {
+                "default": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              },
+              "cursor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Cursor"
+              }
+            },
+            "title": "behavior_rulesRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/behavior_rulesRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "behavior_rulesArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "behavior_rulesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "behavior_candidates",
+      "description": "用户问现在该做什么或想做某行为时必须优先使用此提醒工具。requires_stage_confirmation=true时只问next_question并等待，不能先给方案。unknown须补问或理解原文，分页未完继续查询；没有方案不编造。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "BehaviorContext": {
+            "additionalProperties": false,
+            "properties": {
+              "flow_id": {
+                "default": null,
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "stage_id": {
+                "default": null,
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Stage Id",
+                "type": "string"
+              },
+              "location": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Location",
+                "type": "string"
+              },
+              "states": {
+                "default": null,
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "States",
+                "type": "array"
+              },
+              "trigger": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Trigger",
+                "type": "string"
+              },
+              "local_datetime": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Local Datetime",
+                "type": "string"
+              },
+              "timezone": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Timezone",
+                "type": "string"
+              }
+            },
+            "title": "BehaviorContext",
+            "type": "object"
+          },
+          "behavior_candidatesRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "context": {
+                "$ref": "#/$defs/BehaviorContext",
+                "default": {
+                  "flow_id": null,
+                  "stage_id": null,
+                  "location": null,
+                  "states": null,
+                  "trigger": null,
+                  "local_datetime": null,
+                  "timezone": null
+                }
+              },
+              "candidate_ids": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                      "type": "string"
+                    },
+                    "maxItems": 100,
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Candidate Ids"
+              },
+              "limit": {
+                "default": 50,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              },
+              "cursor": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Cursor"
+              }
+            },
+            "title": "behavior_candidatesRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/behavior_candidatesRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "behavior_candidatesArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "behavior_candidatesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "create_behavior_rule",
+      "description": "仅用户明确制定长期行为准则时新增；保留原文。当天例外不写入，新增前核对疑似重复，重试沿用原键。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "BehaviorRuleInput": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "action",
+                  "avoid"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "behavior": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Behavior",
+                "type": "string"
+              },
+              "flow_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Flow Id"
+              },
+              "stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stage Id"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reason"
+              },
+              "alternative": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Alternative"
+              },
+              "conditions": {
+                "$ref": "#/$defs/Conditions",
+                "default": {
+                  "locations": [],
+                  "states": [],
+                  "triggers": [],
+                  "weekdays": [],
+                  "time_windows": []
+                }
+              },
+              "interpretation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interpretation"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              },
+              "inactive_reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Inactive Reason"
+              },
+              "source_kind": {
+                "default": "natural_language",
+                "enum": [
+                  "natural_language",
+                  "note_import"
+                ],
+                "title": "Source Kind",
+                "type": "string"
+              },
+              "source_label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source Label"
+              }
+            },
+            "required": [
+              "content",
+              "kind",
+              "behavior"
+            ],
+            "title": "BehaviorRuleInput",
+            "type": "object"
+          },
+          "Conditions": {
+            "additionalProperties": false,
+            "properties": {
+              "locations": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Locations",
+                "type": "array"
+              },
+              "states": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "States",
+                "type": "array"
+              },
+              "triggers": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Triggers",
+                "type": "array"
+              },
+              "weekdays": {
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "time_windows": {
+                "items": {
+                  "$ref": "#/$defs/TimeWindow"
+                },
+                "title": "Time Windows",
+                "type": "array"
+              }
+            },
+            "title": "Conditions",
+            "type": "object"
+          },
+          "TimeWindow": {
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "Start",
+                "type": "string"
+              },
+              "end": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "End",
+                "type": "string"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "title": "TimeWindow",
+            "type": "object"
+          },
+          "create_behavior_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "rule": {
+                "$ref": "#/$defs/BehaviorRuleInput"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "rule"
+            ],
+            "title": "create_behavior_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/create_behavior_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "create_behavior_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "create_behavior_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "update_behavior_rule",
+      "description": "修改指定行为准则，先查询ID和版本。省略字段保留，null仅清空可空字段；conditions={}清空条件。is_active用于暂停或恢复；今天例外不改长期规则。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "BehaviorRulePatch": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "kind": {
+                "default": null,
+                "enum": [
+                  "action",
+                  "avoid"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "behavior": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Behavior",
+                "type": "string"
+              },
+              "flow_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Flow Id"
+              },
+              "stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stage Id"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reason"
+              },
+              "alternative": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Alternative"
+              },
+              "conditions": {
+                "$ref": "#/$defs/Conditions",
+                "default": null
+              },
+              "interpretation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interpretation"
+              },
+              "is_active": {
+                "default": null,
+                "title": "Is Active",
+                "type": "boolean"
+              },
+              "inactive_reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Inactive Reason"
+              },
+              "source_kind": {
+                "default": null,
+                "enum": [
+                  "natural_language",
+                  "note_import"
+                ],
+                "title": "Source Kind",
+                "type": "string"
+              },
+              "source_label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source Label"
+              }
+            },
+            "title": "BehaviorRulePatch",
+            "type": "object"
+          },
+          "Conditions": {
+            "additionalProperties": false,
+            "properties": {
+              "locations": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Locations",
+                "type": "array"
+              },
+              "states": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "States",
+                "type": "array"
+              },
+              "triggers": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Triggers",
+                "type": "array"
+              },
+              "weekdays": {
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "time_windows": {
+                "items": {
+                  "$ref": "#/$defs/TimeWindow"
+                },
+                "title": "Time Windows",
+                "type": "array"
+              }
+            },
+            "title": "Conditions",
+            "type": "object"
+          },
+          "TimeWindow": {
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "Start",
+                "type": "string"
+              },
+              "end": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "End",
+                "type": "string"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "title": "TimeWindow",
+            "type": "object"
+          },
+          "update_behavior_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "rule_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "$ref": "#/$defs/BehaviorRulePatch"
+              }
+            },
+            "required": [
+              "request_key",
+              "rule_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "update_behavior_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/update_behavior_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "update_behavior_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "update_behavior_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "delete_behavior_rule",
+      "description": "用户明确要求时删除指定行为准则，先查询版本；逻辑删除，可用返回的operation_id撤销。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "delete_behavior_ruleRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "rule_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "request_key",
+              "rule_id",
+              "expected_version"
+            ],
+            "title": "delete_behavior_ruleRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/delete_behavior_ruleRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "delete_behavior_ruleArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "delete_behavior_ruleDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "create_routine_flow",
+      "description": "创建用户明确制定的单个长期流程及有序阶段，返回阶段ID；不把阶段创建或建议当作执行完成。多项笔记批量导入使用preview_behavior_plan和apply_behavior_plan。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "FlowInput": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "weekdays": {
+                "default": [],
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "applicability_text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Applicability Text"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "content"
+            ],
+            "title": "FlowInput",
+            "type": "object"
+          },
+          "StageInput": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "reference_time": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reference Time"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "content"
+            ],
+            "title": "StageInput",
+            "type": "object"
+          },
+          "create_routine_flowRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "flow": {
+                "$ref": "#/$defs/FlowInput"
+              },
+              "stages": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/StageInput"
+                },
+                "maxItems": 100,
+                "title": "Stages",
+                "type": "array"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "flow"
+            ],
+            "title": "create_routine_flowRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/create_routine_flowRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "create_routine_flowArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "create_routine_flowDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "update_routine_flow",
+      "description": "按当前版本修改流程名称、原文、适用日或启停。停用流程不覆盖其中单条准则的启停状态。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "FlowPatch": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "weekdays": {
+                "default": null,
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "applicability_text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Applicability Text"
+              },
+              "is_active": {
+                "default": null,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "title": "FlowPatch",
+            "type": "object"
+          },
+          "update_routine_flowRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "flow_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "$ref": "#/$defs/FlowPatch"
+              }
+            },
+            "required": [
+              "request_key",
+              "flow_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "update_routine_flowRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/update_routine_flowRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "update_routine_flowArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "update_routine_flowDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "preview_behavior_plan",
+      "description": "只读预览阶段编辑、插入、重排、删除及笔记批量导入；按client_ref引用同批新对象，展示原文、前后变化、级联影响和确认要求。不写正式数据，预览不等于已保存。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "BehaviorRuleInput": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "action",
+                  "avoid"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "behavior": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Behavior",
+                "type": "string"
+              },
+              "flow_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Flow Id"
+              },
+              "stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stage Id"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reason"
+              },
+              "alternative": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Alternative"
+              },
+              "conditions": {
+                "$ref": "#/$defs/Conditions",
+                "default": {
+                  "locations": [],
+                  "states": [],
+                  "triggers": [],
+                  "weekdays": [],
+                  "time_windows": []
+                }
+              },
+              "interpretation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interpretation"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              },
+              "inactive_reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Inactive Reason"
+              },
+              "source_kind": {
+                "default": "natural_language",
+                "enum": [
+                  "natural_language",
+                  "note_import"
+                ],
+                "title": "Source Kind",
+                "type": "string"
+              },
+              "source_label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source Label"
+              }
+            },
+            "required": [
+              "content",
+              "kind",
+              "behavior"
+            ],
+            "title": "BehaviorRuleInput",
+            "type": "object"
+          },
+          "BehaviorRulePatch": {
+            "additionalProperties": false,
+            "properties": {
+              "content": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "kind": {
+                "default": null,
+                "enum": [
+                  "action",
+                  "avoid"
+                ],
+                "title": "Kind",
+                "type": "string"
+              },
+              "behavior": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Behavior",
+                "type": "string"
+              },
+              "flow_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Flow Id"
+              },
+              "stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stage Id"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reason"
+              },
+              "alternative": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Alternative"
+              },
+              "conditions": {
+                "$ref": "#/$defs/Conditions",
+                "default": null
+              },
+              "interpretation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Interpretation"
+              },
+              "is_active": {
+                "default": null,
+                "title": "Is Active",
+                "type": "boolean"
+              },
+              "inactive_reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Inactive Reason"
+              },
+              "source_kind": {
+                "default": null,
+                "enum": [
+                  "natural_language",
+                  "note_import"
+                ],
+                "title": "Source Kind",
+                "type": "string"
+              },
+              "source_label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source Label"
+              }
+            },
+            "title": "BehaviorRulePatch",
+            "type": "object"
+          },
+          "Conditions": {
+            "additionalProperties": false,
+            "properties": {
+              "locations": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Locations",
+                "type": "array"
+              },
+              "states": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "States",
+                "type": "array"
+              },
+              "triggers": {
+                "items": {
+                  "minLength": 1,
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "title": "Triggers",
+                "type": "array"
+              },
+              "weekdays": {
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "time_windows": {
+                "items": {
+                  "$ref": "#/$defs/TimeWindow"
+                },
+                "title": "Time Windows",
+                "type": "array"
+              }
+            },
+            "title": "Conditions",
+            "type": "object"
+          },
+          "CreateFlowActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "create_flow",
+                "title": "Type",
+                "type": "string"
+              },
+              "client_ref": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Client Ref",
+                "type": "string"
+              },
+              "flow": {
+                "$ref": "#/$defs/FlowInput"
+              },
+              "stages": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/ImportStage"
+                },
+                "maxItems": 100,
+                "title": "Stages",
+                "type": "array"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "client_ref",
+              "flow"
+            ],
+            "title": "CreateFlowActionRequest",
+            "type": "object"
+          },
+          "CreateRuleActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "create_rule",
+                "title": "Type",
+                "type": "string"
+              },
+              "client_ref": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Client Ref",
+                "type": "string"
+              },
+              "rule": {
+                "$ref": "#/$defs/BehaviorRuleInput"
+              },
+              "flow_ref": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Flow Ref",
+                "type": "string"
+              },
+              "stage_ref": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Stage Ref",
+                "type": "string"
+              },
+              "confirmed_distinct": {
+                "default": false,
+                "title": "Confirmed Distinct",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "client_ref",
+              "rule"
+            ],
+            "title": "CreateRuleActionRequest",
+            "type": "object"
+          },
+          "DeleteFlowActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "delete_flow",
+                "title": "Type",
+                "type": "string"
+              },
+              "flow_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "cascade_dependents": {
+                "default": false,
+                "title": "Cascade Dependents",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "flow_id",
+              "expected_version"
+            ],
+            "title": "DeleteFlowActionRequest",
+            "type": "object"
+          },
+          "DeleteRuleActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "delete_rule",
+                "title": "Type",
+                "type": "string"
+              },
+              "rule_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "rule_id",
+              "expected_version"
+            ],
+            "title": "DeleteRuleActionRequest",
+            "type": "object"
+          },
+          "DeleteStageActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "delete_stage",
+                "title": "Type",
+                "type": "string"
+              },
+              "stage_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Stage Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "cascade_rules": {
+                "default": false,
+                "title": "Cascade Rules",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "stage_id",
+              "expected_version"
+            ],
+            "title": "DeleteStageActionRequest",
+            "type": "object"
+          },
+          "EditStageActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "edit_stage",
+                "title": "Type",
+                "type": "string"
+              },
+              "stage_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Stage Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "$ref": "#/$defs/StagePatch"
+              }
+            },
+            "required": [
+              "type",
+              "stage_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "EditStageActionRequest",
+            "type": "object"
+          },
+          "FlowInput": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "weekdays": {
+                "default": [],
+                "items": {
+                  "maximum": 7,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "title": "Weekdays",
+                "type": "array"
+              },
+              "applicability_text": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Applicability Text"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "content"
+            ],
+            "title": "FlowInput",
+            "type": "object"
+          },
+          "ImportStage": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "reference_time": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reference Time"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              },
+              "client_ref": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Client Ref",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "content"
+            ],
+            "title": "ImportStage",
+            "type": "object"
+          },
+          "InsertStageActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "insert_stage",
+                "title": "Type",
+                "type": "string"
+              },
+              "client_ref": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Client Ref",
+                "type": "string"
+              },
+              "flow_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "expected_flow_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Flow Version",
+                "type": "integer"
+              },
+              "before_stage_id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Before Stage Id"
+              },
+              "stage": {
+                "$ref": "#/$defs/StageInput"
+              }
+            },
+            "required": [
+              "type",
+              "client_ref",
+              "flow_id",
+              "expected_flow_version",
+              "stage"
+            ],
+            "title": "InsertStageActionRequest",
+            "type": "object"
+          },
+          "ReorderActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "reorder_stages",
+                "title": "Type",
+                "type": "string"
+              },
+              "flow_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Flow Id",
+                "type": "string"
+              },
+              "expected_flow_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Flow Version",
+                "type": "integer"
+              },
+              "ordered_stage_ids": {
+                "items": {
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                  "type": "string"
+                },
+                "maxItems": 100,
+                "title": "Ordered Stage Ids",
+                "type": "array"
+              }
+            },
+            "required": [
+              "type",
+              "flow_id",
+              "expected_flow_version",
+              "ordered_stage_ids"
+            ],
+            "title": "ReorderActionRequest",
+            "type": "object"
+          },
+          "StageInput": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "reference_time": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reference Time"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "content"
+            ],
+            "title": "StageInput",
+            "type": "object"
+          },
+          "StagePatch": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Name",
+                "type": "string"
+              },
+              "content": {
+                "default": null,
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Content",
+                "type": "string"
+              },
+              "reference_time": {
+                "anyOf": [
+                  {
+                    "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reference Time"
+              },
+              "is_active": {
+                "default": null,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "title": "StagePatch",
+            "type": "object"
+          },
+          "TimeWindow": {
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "Start",
+                "type": "string"
+              },
+              "end": {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "title": "End",
+                "type": "string"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "title": "TimeWindow",
+            "type": "object"
+          },
+          "UpdateRuleActionRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "update_rule",
+                "title": "Type",
+                "type": "string"
+              },
+              "rule_id": {
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                "title": "Rule Id",
+                "type": "string"
+              },
+              "expected_version": {
+                "exclusiveMinimum": 0,
+                "title": "Expected Version",
+                "type": "integer"
+              },
+              "changes": {
+                "$ref": "#/$defs/BehaviorRulePatch"
+              }
+            },
+            "required": [
+              "type",
+              "rule_id",
+              "expected_version",
+              "changes"
+            ],
+            "title": "UpdateRuleActionRequest",
+            "type": "object"
+          },
+          "preview_behavior_planRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "actions": {
+                "items": {
+                  "discriminator": {
+                    "mapping": {
+                      "create_flow": "#/$defs/CreateFlowActionRequest",
+                      "create_rule": "#/$defs/CreateRuleActionRequest",
+                      "delete_flow": "#/$defs/DeleteFlowActionRequest",
+                      "delete_rule": "#/$defs/DeleteRuleActionRequest",
+                      "delete_stage": "#/$defs/DeleteStageActionRequest",
+                      "edit_stage": "#/$defs/EditStageActionRequest",
+                      "insert_stage": "#/$defs/InsertStageActionRequest",
+                      "reorder_stages": "#/$defs/ReorderActionRequest",
+                      "update_rule": "#/$defs/UpdateRuleActionRequest"
+                    },
+                    "propertyName": "type"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/CreateFlowActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/CreateRuleActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/UpdateRuleActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/DeleteRuleActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/EditStageActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/InsertStageActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/ReorderActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/DeleteStageActionRequest"
+                    },
+                    {
+                      "$ref": "#/$defs/DeleteFlowActionRequest"
+                    }
+                  ]
+                },
+                "maxItems": 200,
+                "minItems": 1,
+                "title": "Actions",
+                "type": "array"
+              }
+            },
+            "required": [
+              "actions"
+            ],
+            "title": "preview_behavior_planRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/preview_behavior_planRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "preview_behavior_planArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "preview_behavior_planDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "apply_behavior_plan",
+      "description": "仅执行服务端预览ID，不接受替换动作；requires_confirmation=true时须落实用户对原范围的授权才传confirmed=true。整批原子写入，失败不部分保存；重试沿用原键，撤销使用返回的operation_id。",
+      "inputSchema": {
+        "type": "object",
+        "$defs": {
+          "apply_behavior_planRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "request_key": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Request Key",
+                "type": "string"
+              },
+              "preview_id": {
+                "minLength": 1,
+                "pattern": "\\S",
+                "title": "Preview Id",
+                "type": "string"
+              },
+              "confirmed": {
+                "default": false,
+                "title": "Confirmed",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "request_key",
+              "preview_id"
+            ],
+            "title": "apply_behavior_planRequest",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "request": {
+            "$ref": "#/$defs/apply_behavior_planRequest"
+          }
+        },
+        "required": [
+          "request"
+        ],
+        "title": "apply_behavior_planArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "JsonValue": {}
+        },
+        "additionalProperties": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "title": "apply_behavior_planDictOutput",
         "type": "object"
       },
       "annotations": {

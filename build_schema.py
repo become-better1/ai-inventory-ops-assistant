@@ -135,5 +135,5 @@ CREATE INDEX changes_entity ON operation_changes(entity_type,entity_id);
 CREATE VIEW current_inventory AS SELECT * FROM items WHERE is_void=0 AND ownership_status='held';
 """
 if __name__ == '__main__':
-    Path(__file__).with_name('schema.sql').write_text(sql, encoding='utf-8')
+    raise SystemExit('schema.sql is immutable migration 001; add a new migration instead')
 

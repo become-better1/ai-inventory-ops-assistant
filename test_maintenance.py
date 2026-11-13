@@ -95,7 +95,7 @@ class MaintenanceChecks(unittest.TestCase):
         c.close()
         restored=Assistant(saved['backup'])
         self.assertEqual(len(restored.inventory()),1)
-        self.assertEqual(verify_backup(saved['backup'])['schema_version'],1)
+        self.assertEqual(verify_backup(saved['backup'])['schema_version'],2)
 
     def test_missing_source_does_not_create_database(self):
         missing=self.root/'missing.sqlite3'
